@@ -51,7 +51,8 @@ convertPercent <- function(data){
   
   return(data)
 }
-
+library(AnalyzeTS)
+library(readr)
 FTS_Predict<- function(data,year,month,day,freq){
   
   # This function builds a time series and predicts the 5 steps ahead
@@ -86,7 +87,7 @@ FTS_Predict<- function(data,year,month,day,freq){
   
   C1<-as.numeric(str.C1[1])
   
-  crypto_predict<-fuzzy.ts2(crypto,n=7,w=7,D1=0,D2=0,C=C1,forecast=5,type="Abbasov-Mamedova",trace=TRUE,plot=TRUE)
+  crypto_predict<-fuzzy.ts2(crypto,n=7,w=7,D1=0,D2=0,C=C1,forecast=500,type="Abbasov-Mamedova",trace=TRUE,plot=TRUE)
   
   return(crypto_predict)
   
@@ -94,4 +95,5 @@ FTS_Predict<- function(data,year,month,day,freq){
 TimeTo <- as.Date(as.POSIXct(dataset.btc$TimeTo, origin="1970-01-01"))
 TimeFrom <- as.Date(as.POSIXct(dataset.btc$TimeFrom, origin="1970-01-01"))
 
-FTS_Predict(dataset.btc, 2012, 12, 27)
+prediction <- FTS_Predict(dataset.btc$Data$open, 2012, 12, 27, 365)
+  
