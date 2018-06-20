@@ -1,7 +1,7 @@
 library(jsonlite)
 
-dataset.btc <- fromJSON("https://min-api.cryptocompare.com/data/histoday?fsym=BTC&tsym=USD&limit=2000&aggregate=1&e=CCCAGG")
-
+dataset.btc <- fromJSON("https://min-api.cryptocompare.com/data/histohour?fsym=BTC&tsym=USD&limit=2000000&aggregate=1&e=CCCAGG")
+newdata <- fromJSON("C:/Users/ALLEN_JACK/.spyder-py3/output.json")
 # head is the old data and tail the new data
 
 tail(dataset.btc$Data)
@@ -83,17 +83,21 @@ FTS_Predict<- function(data,year,month,day,freq){
   
   # Abbasov-Mamedova model
   
-  str.C1<-DOC(crypto,n=7,w=7,D1=0,D2=0,CEF="MAPE",type="Abbasov-Mamedova")
+  str.C1<-DOC(crypto,n=50,w=7,D1=0,D2=0,CEF="MAPE",type="Abbasov-Mamedova")
   
   C1<-as.numeric(str.C1[1])
   
-  crypto_predict<-fuzzy.ts2(crypto,n=7,w=7,D1=0,D2=0,C=C1,forecast=500,type="Abbasov-Mamedova",trace=TRUE,plot=TRUE)
+  crypto_predict<-fuzzy.ts2(crypto,n=50,w=12,D1=0,D2=0,C=C1,forecast=50, type="Abbasov-Mamedova",trace=TRUE,plot=TRUE)
   
   return(crypto_predict)
   
 }
-TimeTo <- as.Date(as.POSIXct(dataset.btc$TimeTo, origin="1970-01-01"))
-TimeFrom <- as.Date(as.POSIXct(dataset.btc$TimeFrom, origin="1970-01-01"))
+TimeFrom <- as.Date(as.POSIXct(dataset.btc$TimeTo, origin="1970-01-01"))
+TimeFrom2 <- as.Date(as.POSIXct(newdata$time, origin="1970-01-01"))
 
-prediction <- FTS_Predict(dataset.btc$Data$open, 2012, 12, 27, 365)
-  
+prediction <- FTS_Predict(dataset.btc$Data$open, 2012, 12, 27, 182)
+
+newdataDated <- convertUnix(newdata)
+secondPrediction <- FTS_Predict(newdataDated$close, 2018, 6, 19, 525600)
+
+thirdPrediction <- FTS_Predict(newdataDated$close, 2018, 6, 19, 60)
